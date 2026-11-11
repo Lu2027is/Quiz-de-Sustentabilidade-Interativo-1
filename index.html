@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Sustentabilidade</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            color: #2e7d32;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button.option-btn {
+            background-color: #f1f8e9;
+            border: 2px solid #aed581;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #2e7d32;
+        }
+        button.option-btn:hover {
+            background-color: #dcedc8;
+            border-color: #7cb342;
+        }
+        .result {
+            text-align: center;
+            display: none;
+        }
+        .result h2 {
+            color: #1b5e20;
+        }
+        .result p {
+            font-size: 1.1em;
+            line-height: 1.5;
+            color: #444;
+        }
+        .restart-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .restart-btn:hover {
+            background-color: #1b5e20;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container" id="quizCard">
+        <h1>🌱 Quiz de Sustentabilidade</h1>
+        
+        <div id="quizContent">
+            <div class="question" id="perguntaTexto">A carregar pergunta...</div>
+            <div class="options" id="opcoesContainer"></div>
+        </div>
+
+        <div class="result" id="resultadoContainer">
+            <h2>Resultado Final</h2>
+            <p id="mensagemResultado"></p>
+            <button class="restart-btn" onclick="reiniciarQuiz()">Tentar Novamente</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 - Projeto Fictício Ecológico</p>
+    </footer>
+
+    <script>
+        const perguntas = [
+            {
+                pergunta: "1. Como costumas deslocar-te em percursos curtos no dia a dia?",
+                opcoes: [
+                    { texto: "A pé ou de bicicleta", pontos: 3 },
+                    { texto: "Transportes públicos", pontos: 2 },
+                    { texto: "Carro particular sozinho", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "2. Qual é a tua prática com plásticos descartáveis?",
+                opcoes: [
+                    { texto: "Uso sempre alternativas reutilizáveis (sacos de pano, garrafa inox)", pontos: 3 },
+                    { texto: "Reciclo o que utilizo", pontos: 2 },
+                    { texto: "Uso e deito fora no lixo comum", pontos: 1 }
+                ]
+            },
+            {
+                pergunta: "3. Em relação ao consumo de energia em casa, o que fazes?",
+                opcoes: [
+                    { texto: "Apago luzes e desligo aparelhos da tomada quando não uso", pontos: 3 },
+                    { texto: "Tento poupar ocasionalmente", pontos: 2 },
+                    { texto: "Deixo luzes ligadas e standby ligado frequentemente", pontos: 1 }
+                ]
+            }
+        ];
+
+        let perguntaAtual = 0;
+        let pontuacaoTotal = 0;
+
+        const perguntaTexto = document.getElementById('perguntaTexto');
+        const opcoesContainer = document.getElementById('opcoesContainer');
+        const quizContent = document.getElementById('quizContent');
+        const resultadoContainer = document.getElementById('resultadoContainer');
+        const mensagemResultado = document.getElementById('mensagemResultado');
+
+        function carregarPergunta() {
+            const q = perguntas[perguntaAtual];
+            perguntaTexto.innerText = q.pergunta;
+            opcoesContainer.innerHTML = "";
+
+            q.opcoes.forEach(opcao => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opcao.texto;
+                btn.onclick = () => selecionarOpcao(opcao.pontos);
+                opcoesContainer.appendChild(btn);
+            });
+        }
+
+        function selecionarOpcao(pontos) {
+            pontuacaoTotal += pontos;
+            perguntaAtual++;
+
+            if (perguntaAtual < perguntas.length) {
+                carregarPergunta();
+            } else {
+                mostrarResultado();
+            }
+        }
+
+        function mostrarResultado() {
+            quizContent.style.display = 'none';
+            resultadoContainer.style.display = 'block';
+
+            let texto = "";
+            if (pontuacaoTotal >= 8) {
+                texto = `Pontuação: ${pontuacaoTotal}/9. <strong>Parabéns!</strong> Tens hábitos altamente ecológicos e és um verdadeiro defensor do planeta! 🌍💚`;
+            } else if (pontuacaoTotal >= 5) {
+                texto = `Pontuação: ${pontuacaoTotal}/9. <strong>Bom trabalho!</strong> Estás no caminho certo, mas ainda há pequenos hábitos que podes melhorar para seres mais sustentável. 🌱`;
+            } else {
+                texto = `Pontuação: ${pontuacaoTotal}/9. <strong>Atenção!</strong> Os teus hábitos precisam de um empurrão verde. Pequenas mudanças diárias podem fazer uma grande diferença. 💡`;
+            }
+
+            mensagemResultado.innerHTML = texto;
+        }
+
+        function reiniciarQuiz() {
+            perguntaAtual = 0;
+            pontuacaoTotal = 0;
+            resultadoContainer.style.display = 'none';
+            quizContent.style.display = 'block';
+            carregarPergunta();
+        }
+
+        carregarPergunta();
+    </script>
+</body>
+</html>
